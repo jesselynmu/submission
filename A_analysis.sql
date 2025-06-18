@@ -43,6 +43,20 @@ SELECT
     WHEN r_score = 2 AND f_score = 1 AND m_score BETWEEN 2 AND 3 THEN 'About to Sleep'
     ELSE 'Others'
   END AS segment
-FROM rfm_scored
+FROM rfm_scored;
 
 -- Query repeat-purchase bulanan
+SELECT
+  EXTRACT(YEAR FROM order_date) AS year,
+  EXTRACT(MONTH FROM order_date) AS month,
+  COUNT(DISTINCT customer_id) AS total_customers,
+  COUNT(DISTINCT CASE WHEN tx_count > 1 THEN customer_id END) AS repeat_customers
+FROM (
+  SELECT
+    customer_id,
+    order_date,
+    COUNT(*) OVER (PARTITION BY customer_id, EXTRACT(YEAR FROM order_date), EXTRACT(MONTH FROM order_date)) AS tx_count
+  FROM abstract-block-385512.transaction_dateset.transactions
+)
+GROUP BY year, month
+ORDER BY year, month;
