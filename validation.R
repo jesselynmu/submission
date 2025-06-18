@@ -15,7 +15,6 @@ df_calib <- df %>%
     prob = predict(model, type = "response")
   )
 
-# 2. Binning probabilitas ke dalam 10 grup (decile)
 df_calib <- df_calib %>%
   mutate(bin = ntile(prob, 10)) %>%
   group_by(bin) %>%
@@ -25,7 +24,6 @@ df_calib <- df_calib %>%
     n = n()
   )
 
-# 3. Plot calibration curve
 ggplot(df_calib, aes(x = mean_prob, y = actual_rate)) +
   geom_line(color = "steelblue") +
   geom_point(size = 2) +
@@ -36,3 +34,17 @@ ggplot(df_calib, aes(x = mean_prob, y = actual_rate)) +
     y = "Actual Default Rate"
   ) +
   theme_minimal()
+
+df_cutoff <- df %>%
+  mutate(prob = predict(model, type = "response")) %>%
+  arrange(desc(prob)) %>%
+  mutate(
+    row = row_number(),
+    cum_default = cumsum(default),
+    cum_total = row,
+    cum_default_rate = cum_default / cum_total
+  )
+
+cutoff_row <- df_cutoff %>% filter(cum_default_rate <= 0.05) %>% slice(1)
+
+print(paste("Hasil cutoff score adalah:", round(cutoff_row$prob, 4)))
