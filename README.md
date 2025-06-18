@@ -1,9 +1,9 @@
 # 📁 Case Study
 
 ## 👤 Profil Peserta
-Nama: Jesselyn Mu
-Email: mujesselyn@gmail.com
-LinkedIn: Jesselyn Mu
+- Nama: Jesselyn Mu
+- Email: mujesselyn@gmail.com
+- LinkedIn: Jesselyn Mu
 
 ## ⚙️ Lingkungan & Versi
 - Python: 3.11  
